@@ -345,131 +345,95 @@ function HeroSchema({ sun, setSun }) {
       </div>
 
       <style>{`
-        @keyframes flowDash { to { stroke-dashoffset: -40; } }
-        .flow-pipe { stroke-dasharray: 8 6; animation: flowDash linear infinite; }
-        @keyframes pulseGlow { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
-        .pulse { animation: pulseGlow 1.4s ease-in-out infinite; }
         @media (prefers-reduced-motion: reduce) {
-          .flow-pipe { animation: none !important; }
-          .pulse { animation: none !important; }
+          #cesi-scene animate, #cesi-scene animateMotion { display: none !important; }
         }
       `}</style>
 
-      <svg viewBox="0 0 760 300" style={{ width: "100%", display: "block" }}>
+      <svg id="cesi-scene" viewBox="0 0 680 420" style={{ width: "100%", display: "block" }} role="img">
+        <title>CESI interactif</title>
         <defs>
-          <pattern id="graph" width="24" height="24" patternUnits="userSpaceOnUse">
-            <path d="M24 0H0V24" fill="none" stroke={T.grid} strokeWidth="0.5" opacity="0.5" />
-          </pattern>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8FCBEF" /><stop offset="1" stopColor="#E7F4FB" /></linearGradient>
+          <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8FCB6B" /><stop offset="1" stopColor="#5FA347" /></linearGradient>
+          <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#2E75C9" /><stop offset="0.5" stopColor="#1B4E8F" /><stop offset="1" stopColor="#0F3266" /></linearGradient>
+          <linearGradient id="tank" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#F2F5F8" /><stop offset="0.45" stopColor="#C7D2DC" /><stop offset="0.55" stopColor="#AAB7C4" /><stop offset="1" stopColor="#DCE3E9" /></linearGradient>
+          <path id="hotpipe" d="M250,262 C310,220 350,200 380,185" fill="none" />
+          <path id="coldpipe" d="M380,290 C340,320 300,310 232,300" fill="none" />
         </defs>
-        <rect width="760" height="300" fill={T.navyDeep} />
-        <rect width="760" height="300" fill="url(#graph)" />
+        <rect x="0" y="0" width="680" height="420" fill="url(#sky)" />
 
-        {/* Sun */}
-        <circle
-          cx="80"
-          cy="60"
-          r={14 + sun / 12}
-          fill={T.gold}
-          opacity={0.25 + (sun / 100) * 0.6}
-        />
-        <circle cx="80" cy="60" r="10" fill={T.gold} />
-        <text x="80" y="95" textAnchor="middle" fontFamily={FONT_MONO} fontSize="10" fill={T.inkDim}>
-          soleil
-        </text>
+        {/* House */}
+        <rect x="455" y="148" width="225" height="10" fill="#5C4A38" />
+        <rect x="460" y="158" width="220" height="192" fill="#DCD3C4" stroke="#B8AC96" strokeWidth="1" />
+        <line x1="460" y1="210" x2="680" y2="210" stroke="#C7BBA6" strokeWidth="1" opacity="0.6" />
+        <line x1="460" y1="270" x2="680" y2="270" stroke="#C7BBA6" strokeWidth="1" opacity="0.6" />
+        <rect x="558" y="192" width="56" height="64" rx="2" fill="#8FB8CE" stroke="#4A4A4A" strokeWidth="1.5" />
+        <line x1="586" y1="192" x2="586" y2="256" stroke="#4A4A4A" strokeWidth="1.5" />
+        <line x1="558" y1="224" x2="614" y2="224" stroke="#4A4A4A" strokeWidth="1.5" />
 
-        {/* Capteur solaire (tilted rectangle) */}
-        <g transform="translate(140,90) rotate(-25)">
-          <rect x="0" y="0" width="120" height="60" fill="#132F42" stroke={T.ink} strokeWidth="1.5" rx="3" />
-          {[1, 2, 3, 4].map((i) => (
-            <line key={i} x1={i * 24} y1="0" x2={i * 24} y2="60" stroke={T.grid} strokeWidth="1" />
-          ))}
+        {/* Ground */}
+        <path d="M0,310 Q170,270 340,305 Q510,340 680,300 L680,420 L0,420 Z" fill="url(#ground)" />
+
+        {/* Sun + beam, driven by the slider */}
+        <polygon points="562,78 586,84 250,269 90,180" fill="#FFE9A8" opacity={0.12 + (sun / 100) * 0.4} />
+        <circle cx="580" cy="70" r="34" fill="#FFD34D" opacity="0.22" />
+        <circle cx="580" cy="70" r="26" fill="#FFCB2E" />
+
+        {/* Capteur solaire (tilted panel) */}
+        <rect x="66" y="292" width="20" height="8" rx="2" fill="#161616" />
+        <line x1="98" y1="192" x2="78" y2="296" stroke="#161616" strokeWidth="7" strokeLinecap="round" />
+        <rect x="90" y="286" width="150" height="16" rx="2" fill="#3D6E2F" opacity="0.3" />
+        <g>
+          <polygon points="250,262 98,192 80,232 232,300" fill="url(#glass)" stroke="#0A2647" strokeWidth="1.5" />
+          <line x1="212" y1="244.5" x2="194" y2="283" stroke="#0A2647" strokeWidth="1" opacity="0.55" />
+          <line x1="174" y1="227" x2="156" y2="266" stroke="#0A2647" strokeWidth="1" opacity="0.55" />
+          <line x1="136" y1="209.5" x2="118" y2="249" stroke="#0A2647" strokeWidth="1" opacity="0.55" />
+          <line x1="218" y1="252" x2="98" y2="198" stroke="#5FA8E8" strokeWidth="2" opacity="0.5" />
         </g>
-        <text x="150" y="185" fontFamily={FONT_BODY} fontSize="12" fill={T.ink} fontWeight="600">
-          Capteurs
-        </text>
+        <line x1="140" y1="316" x2="110" y2="248" stroke="#D8492C" strokeWidth="2" />
+        <line x1="162" y1="316" x2="190" y2="278" stroke="#2E75C9" strokeWidth="2" />
+        <rect x="125" y="308" width="52" height="34" rx="6" fill="#26313C" stroke="#0F1720" strokeWidth="1" />
+        <rect x="133" y="316" width="36" height="14" rx="2" fill={circulating ? "#4FD1E8" : "#5B6472"} />
+        <rect x="102" y="345" width="98" height="20" rx="5" fill="#1B2A14" opacity="0.55" />
+        <text x="151" y="359" textAnchor="middle" fill="#FFFFFF" fontFamily={FONT_BODY} fontSize="13" fontWeight="500">Régulation</text>
 
-        {/* Régulation (dashed control box) */}
-        <rect x="130" y="20" width="230" height="45" fill="none" stroke={T.azure} strokeWidth="1.5" strokeDasharray="5 4" rx="4" />
-        <text x="145" y="14" fontFamily={FONT_MONO} fontSize="10" fill={T.azure}>
-          régulation
-        </text>
-        <circle cx="205" cy="42" r="6" fill={circulating ? T.copper : T.grid} className={circulating ? "pulse" : ""} />
-        <text x="220" y="46" fontFamily={FONT_MONO} fontSize="10" fill={T.inkDim}>
-          sonde S-1
-        </text>
+        {/* Ballon de stockage + appoint zone */}
+        <g>
+          <ellipse cx="420" cy="322" rx="70" ry="12" fill="#3D6E2F" opacity="0.35" />
+          <rect x="380" y="130" width="80" height="190" rx="38" fill="url(#tank)" stroke="#7C8996" strokeWidth="1.5" />
+          <rect x="392" y="140" width="8" height="170" rx="4" fill="#FFFFFF" opacity="0.6" />
+          <circle cx="420" cy="263" r="34" fill="#F0862E" opacity={appointOn ? (0.18 + (55 - sun) / 55 * 0.22) : 0} />
+          <rect x="392" y="220" width="56" height="86" rx="20" fill={appointOn ? "#F0862E" : "#8C929A"} />
+        </g>
 
-        {/* Hot pipe: capteur -> ballon */}
-        <path
-          d="M 260 100 L 420 100"
-          fill="none"
-          stroke={circulating ? T.copper : T.copperDim}
-          strokeWidth="4"
-          className={circulating ? "flow-pipe" : ""}
-          style={{ animationDuration: `${dashSpeed || 1}s` }}
-        />
-        {/* Cold return pipe: ballon -> capteur */}
-        <path
-          d="M 420 170 L 200 170 L 200 130"
-          fill="none"
-          stroke={circulating ? T.azure : "#2A4A5A"}
-          strokeWidth="4"
-          className={circulating ? "flow-pipe" : ""}
-          style={{ animationDuration: `${(dashSpeed || 1) * 1.1}s` }}
-        />
+        {/* Hot / cold loops with animated particles, only while circulating */}
+        <use href="#hotpipe" stroke="#D8492C" strokeWidth="5" strokeLinecap="round" />
+        <use href="#coldpipe" stroke="#2E75C9" strokeWidth="5" strokeLinecap="round" />
+        {circulating && (
+          <>
+            <circle r="4" fill="#FFD9A0">
+              <animateMotion dur={`${dashSpeed || 1}s`} repeatCount="indefinite"><mpath href="#hotpipe" /></animateMotion>
+            </circle>
+            <circle r="4" fill="#FFD9A0">
+              <animateMotion dur={`${dashSpeed || 1}s`} begin="0.7s" repeatCount="indefinite"><mpath href="#hotpipe" /></animateMotion>
+            </circle>
+            <circle r="4" fill="#BFE3FF">
+              <animateMotion dur={`${(dashSpeed || 1) * 1.1}s`} repeatCount="indefinite"><mpath href="#coldpipe" /></animateMotion>
+            </circle>
+            <circle r="4" fill="#BFE3FF">
+              <animateMotion dur={`${(dashSpeed || 1) * 1.1}s`} begin="0.8s" repeatCount="indefinite"><mpath href="#coldpipe" /></animateMotion>
+            </circle>
+          </>
+        )}
 
-        {/* Ballon de stockage */}
-        <rect x="420" y="60" width="90" height="150" rx="18" fill="#132F42" stroke={T.ink} strokeWidth="1.5" />
-        <rect
-          x="428"
-          y={60 + 150 - Math.max(10, (ballonTemp - 20) * 2.2)}
-          width="74"
-          height={Math.max(10, (ballonTemp - 20) * 2.2) - 8}
-          rx="8"
-          fill={T.copper}
-          opacity="0.35"
-        />
-        <text x="465" y="235" textAnchor="middle" fontFamily={FONT_BODY} fontSize="12" fill={T.ink} fontWeight="600">
-          Ballon
-        </text>
-        <text
-          x="465"
-          y="140"
-          textAnchor="middle"
-          fontFamily={FONT_MONO}
-          fontSize="18"
-          fontWeight="600"
-          fill={T.ink}
-        >
-          {ballonTemp}°C
-        </text>
+        <rect x="93" y="378" width="114" height="24" rx="6" fill="#1B2A14" opacity="0.55" />
+        <text x="150" y="394" textAnchor="middle" fill="#FFFFFF" fontFamily={FONT_BODY} fontSize="15" fontWeight="500">Capteur solaire</text>
 
-        {/* Appoint block */}
-        <rect
-          x="560"
-          y="95"
-          width="90"
-          height="45"
-          rx="4"
-          fill="none"
-          stroke={appointOn ? T.gold : T.grid}
-          strokeWidth="1.5"
-          strokeDasharray="5 4"
-          className={appointOn ? "pulse" : ""}
-        />
-        <text x="565" y="88" fontFamily={FONT_MONO} fontSize="10" fill={appointOn ? T.gold : T.inkDim}>
-          appoint {appointOn ? "actif" : "veille"}
-        </text>
-        <path d="M 510 118 L 560 118" fill="none" stroke={appointOn ? T.gold : T.grid} strokeWidth="4" />
-
-        {/* Hot water out */}
-        <path d="M 650 118 L 700 118" fill="none" stroke={T.copper} strokeWidth="4" markerEnd="url(#arrow)" />
-        <defs>
-          <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 Z" fill={T.copper} />
-          </marker>
-        </defs>
-        <text x="655" y="105" fontFamily={FONT_MONO} fontSize="10" fill={T.inkDim}>
-          eau chaude
+        <rect x="390" y="100" width="60" height="22" rx="6" fill="#3B4652" opacity="0.8" />
+        <text x="420" y="116" textAnchor="middle" fill="#FFFFFF" fontFamily={FONT_BODY} fontSize="13" fontWeight="500">Ballon {ballonTemp}°C</text>
+        <rect x="372" y="345" width="108" height="22" rx="5" fill="#1B2A14" opacity="0.6" />
+        <text x="426" y="360" textAnchor="middle" fill="#FFFFFF" fontFamily={FONT_BODY} fontSize="13" fontWeight="500">
+          Appoint : {appointOn ? "actif" : "veille"}
         </text>
       </svg>
 
